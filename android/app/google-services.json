@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "356281802584",
+    "project_id": "moaveenj",
+    "storage_bucket": "moaveenj.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:356281802584:android:d0ac76c35bd66876514f2d",
+        "android_client_info": {
+          "package_name": "com.example.moaveen"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "356281802584-er25flj8huu1odqrsa9qcnsbnanbf2hr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFYpUZf80_cQDM372MQMnazhg1TXAvJ2M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "356281802584-er25flj8huu1odqrsa9qcnsbnanbf2hr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
