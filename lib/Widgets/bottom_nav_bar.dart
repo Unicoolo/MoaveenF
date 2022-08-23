@@ -1,9 +1,8 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:moaveen/Jobs/jobs_screen.dart';
-import 'package:moaveen/Jobs/upload_job.dart';
+import 'package:moaveen/Jobs/tasks_screen.dart';
+import 'package:moaveen/Jobs/upload_task.dart';
 import 'package:moaveen/Search/profile_screen.dart';
 import 'package:moaveen/Search/search_companies.dart';
 import 'package:moaveen/user_state.dart';
@@ -14,7 +13,9 @@ class BottomNavigationBarForApp extends StatelessWidget {
 
   BottomNavigationBarForApp({required this.indexNum});
 
-  final FirebaseAuth _auth =FirebaseAuth.instance;
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
 
   void _logOut(context)
   {
@@ -75,6 +76,7 @@ class BottomNavigationBarForApp extends StatelessWidget {
   }
 
 
+
   @override
   Widget build(BuildContext context) {
     return CurvedNavigationBar(
@@ -96,7 +98,7 @@ class BottomNavigationBarForApp extends StatelessWidget {
       {
         if(index==0)
         {
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> JobScreen()));
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> TasksScreen()));
         }
         else if(index==1)
         {
@@ -104,11 +106,13 @@ class BottomNavigationBarForApp extends StatelessWidget {
         }
         else if(index==2)
         {
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> UploadJobNow()));
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> UploadTask()));
         }
         else if(index==3)
         {
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> ProfileScreen()));
+          final User? user = _auth.currentUser;
+          final String uid = user!.uid;
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> ProfileScreen(userID:uid)));
         }
         else if(index==4)
         {

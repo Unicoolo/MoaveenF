@@ -1,49 +1,15 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:moaveen/Widgets/bottom_nav_bar.dart';
-import 'package:moaveen/user_state.dart';
 
-class JobScreen extends StatefulWidget {
-  const JobScreen({Key? key}) : super(key: key);
+class jobget extends StatefulWidget {
+  const jobget({Key? key}) : super(key: key);
 
   @override
-  State<JobScreen> createState() => _JobScreenState();
+  State<jobget> createState() => _jobgetState();
 }
 
-class _JobScreenState extends State<JobScreen> {
-
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-
+class _jobgetState extends State<jobget> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.deepOrange.shade300,Colors.blueAccent],
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-          stops: const[0.2,0.9],
-        ),
-      ),
-      child: Scaffold(
-        bottomNavigationBar: BottomNavigationBarForApp(indexNum:0),
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(title: const Text('Job Screen'),
-          centerTitle: true,
-          flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.deepOrange.shade300,Colors.blueAccent],
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-              stops: const[0.2,0.9],
-            ),
-          ),
-         ),
-        ),
-
-
-      ),
-    );
+    return Container();
   }
 }

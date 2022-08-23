@@ -1,8 +1,7 @@
-// ignore_for_file: avoid_print
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:moaveen/Jobs/jobs_screen.dart';
+import 'package:moaveen/Jobs/tasks_screen.dart';
 import 'package:moaveen/LoginPage/login_screen.dart';
 
 class UserState extends StatelessWidget {
@@ -22,7 +21,7 @@ class UserState extends StatelessWidget {
           else if(userSnapshot.hasData)
           {
             print('User is already logged in yet');
-            return JobScreen();
+            return TasksScreen();
           }
           else if(userSnapshot.hasError)
           {

@@ -115,7 +115,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(left: 80, right: 80),
-                      child: Image.asset('assets/images/logo1.png'),
+                      child: Image.asset('assets/images/login.png'),
                     ),
                     const SizedBox(height: 15,),
                     Form(
