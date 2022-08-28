@@ -1,3 +1,4 @@
+
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:io';
@@ -10,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:moaveen/Services/global_methods.dart';
+import 'package:moaveen/constants/constants.dart';
 
 
 import '../Services/global_variables.dart';
@@ -28,13 +30,16 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
   final TextEditingController _fullNameController = TextEditingController(text: '');
   final TextEditingController _emailTextController = TextEditingController(text: '');
   final TextEditingController _passTextController = TextEditingController(text: '');
+  final TextEditingController _roleTextController = TextEditingController(text: '');
   final TextEditingController _phoneNumberController = TextEditingController(text: '');
   final TextEditingController _locationController = TextEditingController(text: '');
 
+
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passFocusNode = FocusNode();
+  final FocusNode _roleFocusNode = FocusNode();
   final FocusNode _phoneNumberFocusNode = FocusNode();
-  final FocusNode _positionCPFocusNode = FocusNode();
+  final FocusNode _locationFocusNode = FocusNode();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -54,8 +59,10 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
     _phoneNumberController.dispose();
     _emailFocusNode.dispose();
     _passFocusNode.dispose();
-    _positionCPFocusNode.dispose();
+    _locationFocusNode.dispose();
     _phoneNumberFocusNode.dispose();
+    _roleTextController.dispose();
+    _roleFocusNode.dispose();
     super.dispose();
   }
 
@@ -93,17 +100,17 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                     _getFormCamera();
                   },
                   child: Row(
-                    children: const [
+                    children: [
                       Padding(
                         padding: EdgeInsets.all(4.0),
                         child: Icon(
                           Icons.camera,
-                          color: Colors.purple,
+                          color: buttonColor,
                         ),
                       ),
                       Text(
                         'Camera',
-                        style: TextStyle(color:Colors.purple),
+                        style: TextStyle(color:buttonColor),
                       )
                     ],
                   ),
@@ -113,17 +120,17 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                     _getFormGallery();
                   },
                   child: Row(
-                    children: const [
+                    children: [
                       Padding(
-                        padding: EdgeInsets.all(4.0),
+                        padding: const EdgeInsets.all(4.0),
                         child: Icon(
                           Icons.image,
-                          color: Colors.purple,
+                          color: buttonColor,
                         ),
                       ),
                       Text(
                         'Gallery',
-                        style: TextStyle(color:Colors.purple),
+                        style: TextStyle(color:buttonColor),
                       )
                     ],
                   ),
@@ -189,7 +196,9 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
          'id': _uid,
          'name': _fullNameController.text,
          'email': _emailTextController.text,
+         'password':_passTextController.text,
          'userImage' : imageUrl,
+         'userRole': _roleTextController.text,
          'phoneNumber' : _phoneNumberController.text,
          'location' : _locationController.text,
          'createdAt' : Timestamp.now(),
@@ -209,6 +218,120 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
     });
   }
 
+  void _roleCategoriesDialog({required Size size}) {
+    showDialog(
+        context: context,
+        builder: (ctx) {
+          return AlertDialog(
+            title: Text(
+              'Choose Role',
+              style: TextStyle(fontSize: 20, color: headingColor),
+            ),
+            content: Container(
+              width: size.width * 0.9,
+              child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: Constants.roleList.length,
+                  itemBuilder: (ctxx, index) {
+                    return InkWell(
+                      onTap: () {
+                        setState(() {
+                          _roleTextController.text =
+                          Constants.roleList[index];
+                        });
+                        Navigator.pop(context);
+                      },
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.check_circle_rounded,
+                            color: iconColor,
+                          ),
+                          // SizedBox(width: 10,),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              Constants.roleList[index],
+                              style: TextStyle(
+                                  color: buttonColor2,
+                                  fontSize: 18,
+                                  fontStyle: FontStyle.italic),
+                            ),
+                          )
+                        ],
+                      ),
+                    );
+                  }),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.canPop(context) ? Navigator.pop(context) : null;
+                },
+                child: Text('Cancel'),
+              ),
+            ],
+          );
+        });
+  }
+
+  void _addressCategoriesDialog({required Size size}) {
+    showDialog(
+        context: context,
+        builder: (ctx) {
+          return AlertDialog(
+            title: Text(
+              'Choose Address',
+              style: TextStyle(fontSize: 20, color: headingColor),
+            ),
+            content: Container(
+              width: size.width * 0.9,
+              child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: Constants.locationList.length,
+                  itemBuilder: (ctxx, index) {
+                    return InkWell(
+                      onTap: () {
+                        setState(() {
+                          _locationController.text =
+                          Constants.locationList[index];
+                        });
+                        Navigator.pop(context);
+                      },
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.check_circle_rounded,
+                            color: iconColor,
+                          ),
+                          // SizedBox(width: 10,),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              Constants.locationList[index],
+                              style: TextStyle(
+                                  color: buttonColor2,
+                                  fontSize: 18,
+                                  fontStyle: FontStyle.italic),
+                            ),
+                          )
+                        ],
+                      ),
+                    );
+                  }),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.canPop(context) ? Navigator.pop(context) : null;
+                },
+                child: const Text('Cancel'),
+              ),
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size=MediaQuery.of(context).size;
@@ -219,7 +342,7 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
             imageUrl: signUpUrlImage,
             placeholder: (context, url) =>
                 Image.asset(
-                  'assets/images/wallpaper.jpg',
+                  signUpImage,
                   fit: BoxFit.fill,
 
                 ),
@@ -249,13 +372,13 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                                 width: size.width*0.24,
                                 height: size.width*0.24,
                                 decoration: BoxDecoration(
-                                  border: Border.all(width: 1,color: Colors.cyanAccent),
+                                  border: Border.all(width: 1,color: buttonColor),
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(16),
                                   child: imageFile==null
-                                      ? const Icon(Icons.camera_enhance_sharp,color: Colors.cyan,size: 30,)
+                                      ? Icon(Icons.camera_enhance_sharp,color: buttonColor)
                                       :Image.file(imageFile!,fit: BoxFit.fill,),
 
                                 ),
@@ -278,19 +401,19 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                                 return null;
                               }
                             },
-                            style: const TextStyle(color: Colors.white),
-                            decoration: const InputDecoration(
+                            style: TextStyle(color: fieldColor),
+                            decoration:  InputDecoration(
                               hintText: 'Full Name',
-                              hintStyle: TextStyle(color: Colors.white),
+                              hintStyle: TextStyle(color: fieldColor),
                               enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
+                                borderSide: BorderSide(color: fieldBorderColor),
                               ),
                               focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
+                                borderSide: BorderSide(color: fieldFocusColor),
                               ),
                               errorBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Colors.red,
+                                  color: fieldErrorColor,
                                 ),
                               ),
                             ),
@@ -311,19 +434,19 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                                 return null;
                               }
                             },
-                            style: const TextStyle(color: Colors.white),
-                            decoration: const InputDecoration(
+                            style: TextStyle(color: fieldColor),
+                            decoration:  InputDecoration(
                               hintText: 'Email',
-                              hintStyle: TextStyle(color: Colors.white),
+                              hintStyle: TextStyle(color: fieldColor),
                               enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
+                                borderSide: BorderSide(color: fieldBorderColor),
                               ),
                               focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
+                                borderSide: BorderSide(color: fieldFocusColor),
                               ),
                               errorBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Colors.red,
+                                  color: fieldErrorColor,
                                 ),
                               ),
                             ),
@@ -333,7 +456,7 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                             textInputAction: TextInputAction.next,
                             onEditingComplete: () =>
                                 FocusScope.of(context)
-                                    .requestFocus(_phoneNumberFocusNode),
+                                    .requestFocus(_roleFocusNode),
                             keyboardType: TextInputType.visiblePassword,
                             controller: _passTextController,
                             obscureText: !_obscureText,
@@ -346,7 +469,7 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                                 return null;
                               }
                             },
-                            style: const TextStyle(color: Colors.white),
+                            style: TextStyle(color: fieldColor),
                             decoration: InputDecoration(
                               suffixIcon: GestureDetector(
                                 onTap: () {
@@ -358,30 +481,70 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                                   _obscureText
                                       ? Icons.visibility
                                       : Icons.visibility_off,
-                                  color: Colors.white,
+                                  color: fieldColor,
                                 ),
                               ),
                               hintText: 'Password',
-                              hintStyle: const TextStyle(color: Colors.white),
-                              enabledBorder: const UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
+                              hintStyle:  TextStyle(color: fieldColor),
+                              enabledBorder:  UnderlineInputBorder(
+                                borderSide: BorderSide(color:fieldBorderColor),
                               ),
-                              focusedBorder: const UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
+                              focusedBorder:  UnderlineInputBorder(
+                                borderSide: BorderSide(color: fieldFocusColor),
                               ),
-                              errorBorder: const UnderlineInputBorder(
+                              errorBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Colors.red,
+                                  color: fieldErrorColor,
                                 ),
                               ),
                             ),
                           ),
                           const SizedBox(height: 20,),
+
+                          GestureDetector(
+                            onTap: () {
+                              _roleCategoriesDialog(size: size);
+                            },
+                            child: TextFormField(
+                              enabled: false,
+                              textInputAction: TextInputAction.next,
+                              onEditingComplete: () => FocusScope.of(context).requestFocus(_phoneNumberFocusNode),
+                              focusNode: _roleFocusNode,
+                              keyboardType: TextInputType.name,
+                              controller: _roleTextController,
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "This field is missing";
+                                } else {
+                                  return null;
+                                }
+                              },
+                              style: TextStyle(color: fieldColor),
+                              decoration: InputDecoration(
+                                hintText: 'Role',
+                                hintStyle: TextStyle(color: fieldColor),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: fieldBorderColor),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: fieldFocusColor),
+                                ),
+                                errorBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: fieldErrorColor),
+                                ),
+                                disabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: fieldBorderColor),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 20,),
                           TextFormField(
                             textInputAction: TextInputAction.next,
                             onEditingComplete: () =>
                                 FocusScope.of(context)
-                                    .requestFocus(_positionCPFocusNode),
+                                    .requestFocus(_locationFocusNode),
                             keyboardType: TextInputType.phone,
                             controller: _phoneNumberController,
                             validator: (value) {
@@ -392,52 +555,59 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                                 return null;
                               }
                             },
-                            style: const TextStyle(color: Colors.white),
-                            decoration: const InputDecoration(
+                            style:  TextStyle(color: fieldColor),
+                            decoration:  InputDecoration(
                               hintText: 'Phone Number',
-                              hintStyle: TextStyle(color: Colors.white),
+                              hintStyle: TextStyle(color: fieldColor),
                               enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
+                                borderSide: BorderSide(color: fieldBorderColor),
                               ),
                               focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
+                                borderSide: BorderSide(color: fieldFocusColor),
                               ),
                               errorBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Colors.red,
+                                  color: fieldErrorColor,
                                 ),
                               ),
                             ),
                           ),
                           const SizedBox(height: 20,),
-                          TextFormField(
-                            textInputAction: TextInputAction.next,
-                            onEditingComplete: () =>
-                                FocusScope.of(context)
-                                    .requestFocus(_positionCPFocusNode),
-                            keyboardType: TextInputType.text,
-                            controller: _locationController,
-                            validator: (value) {
-                              if (value!.isEmpty ) {
-                                return 'Please Enter a valid Number';
-                              }
-                              else {
-                                return null;
-                              }
+
+                          GestureDetector(
+                            onTap: () {
+                              _addressCategoriesDialog(size: size);
                             },
-                            style: const TextStyle(color: Colors.white),
-                            decoration: const InputDecoration(
-                              hintText: 'Address',
-                              hintStyle: TextStyle(color: Colors.white),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                              ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                              ),
-                              errorBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.red,
+                            child: TextFormField(
+                              enabled: false,
+                              textInputAction: TextInputAction.next,
+                              onEditingComplete: () =>
+                                  FocusScope.of(context)
+                                      .requestFocus(_locationFocusNode),
+                              keyboardType: TextInputType.text,
+                              controller: _locationController,
+                              validator: (value) {
+                                if (value!.isEmpty ) {
+                                  return 'Please Enter a valid Address';
+                                }
+                                else {
+                                  return null;
+                                }
+                              },
+                              style:  TextStyle(color: fieldColor),
+                              decoration:  InputDecoration(
+                                hintText: 'Address',
+                                hintStyle: TextStyle(color: fieldColor),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: fieldBorderColor),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: fieldFocusColor),
+                                ),
+                                errorBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: fieldErrorColor,
+                                  ),
                                 ),
                               ),
                             ),
@@ -457,7 +627,7 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                             onPressed: (){
                               _submitFormSignUP();
                             },
-                            color: Colors.cyan,
+                            color: buttonColor,
                             elevation: 8,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(13),
@@ -466,11 +636,11 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                               padding: const EdgeInsets.symmetric(vertical: 14),
                               child:Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [
+                                children:  [
                                   Text(
                                     'SignUp',
                                     style: TextStyle(
-                                      color: Colors.white,
+                                      color: buttonTextColor,
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -484,10 +654,10 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                             child: RichText(
                               text: TextSpan(
                                   children: [
-                                    const TextSpan(
+                                     TextSpan(
                                       text: 'Already have a account ?',
                                       style: TextStyle(
-                                        color: Colors.white,
+                                        color: buttonTextColor,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16,
                                       ),
@@ -499,8 +669,8 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                                         ? Navigator.pop(context)
                                         : null,
                                       text: 'Login',
-                                      style: const TextStyle(
-                                        color: Colors.cyan,
+                                      style: TextStyle(
+                                        color: buttonColor,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16,
                                       ),

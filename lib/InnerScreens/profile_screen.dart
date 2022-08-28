@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttericon/font_awesome_icons.dart';
+import 'package:moaveen/Services/global_variables.dart';
 import 'package:moaveen/Widgets/bottom_nav_bar.dart';
-import 'package:moaveen/constants/constants.dart';
 import 'package:moaveen/user_state.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -18,10 +18,8 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  var _titleTextStyle = TextStyle(
-      fontSize: 22, fontStyle: FontStyle.normal, fontWeight: FontWeight.bold);
-  var contentTextStyle = TextStyle(
-      color: Constants.darkBlue,
+  final _titleTextStyle = const TextStyle(fontSize: 20, fontStyle: FontStyle.normal, fontWeight: FontWeight.bold);
+  var contentTextStyle =  const TextStyle(color: Colors.black54,
       fontSize: 18,
       fontStyle: FontStyle.normal,
       fontWeight: FontWeight.bold);
@@ -36,7 +34,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String phoneNumber = "";
   String email = "";
   String? name;
-  String job = '';
+  String role = '';
+  String userLocation = '';
   String imageUrl = "";
   String joinedAt = " ";
   bool _isSameUser = false;
@@ -53,9 +52,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         setState(() {
           email = userDoc.get('email');
           name = userDoc.get('name');
-          job = userDoc.get('location');
+          role = userDoc.get('userRole');
           phoneNumber = userDoc.get('phoneNumber');
           imageUrl = userDoc.get('userImage');
+          userLocation = userDoc.get('location');
           Timestamp joinedAtTimeStamp = userDoc.get('createdAt');
           var joinedDate = joinedAtTimeStamp.toDate();
           joinedAt = '${joinedDate.year}-${joinedDate.month}-${joinedDate.day}';
@@ -66,34 +66,91 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _isSameUser = _uid == widget.userID;
         });
       }
-    } catch (eror) {} finally {
+    } catch (erorr) {} finally {
       _isLoading = false;
     }
+  }
+
+  void _logOut(context)
+  {
+    showDialog(
+        context: context,
+        builder: (context)
+        {
+          return AlertDialog(
+            backgroundColor: Colors.black54,
+            title: Row(
+              children: const [
+                Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Icon(
+                    Icons.logout,
+                    color: Colors.white,
+                    size: 36,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    'SignOut',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 28,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            content: const Text(
+              'Do you want to LogOut ?',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: (){
+                  Navigator.canPop(context) ? Navigator.pop(context): null;
+                },
+                child: const Text('No',style: TextStyle(color: Colors.green,fontSize:18 ),),
+              ),
+              TextButton(
+                onPressed: (){
+                  _auth.signOut();
+                  Navigator.canPop(context) ? Navigator.pop(context): null;
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> UserState()));
+                },
+                child: const Text('Yes',style: TextStyle(color: Colors.green,fontSize:18 ),),
+              ),
+            ],
+          );
+        }
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      bottomNavigationBar: BottomNavigationBarForApp(indexNum:3),
+      bottomNavigationBar: BottomNavigationBarForApp(indexNum:4),
       backgroundColor: Colors.transparent,
-      //drawer: DrawerWidget(),
       appBar: AppBar(
-        iconTheme: IconThemeData(
+        iconTheme: const IconThemeData(
           color: Colors.black,
         ),
         elevation: 0,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       ),
       body: _isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.only(top: 0),
           child: Stack(
             children: [
               Card(
-                margin: EdgeInsets.all(30),
+                margin: const EdgeInsets.all(10),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -102,62 +159,75 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         height: 100,
                       ),
                       Align(
                           alignment: Alignment.center,
                           child: Text(name == null ? 'Name here' : name!,
                               style: _titleTextStyle)),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       Align(
                         alignment: Alignment.center,
                         child: Text(
-                          '$job joined $joinedAt',
+                          '$role ',
                           style: contentTextStyle,
                         ),
                       ),
-                      SizedBox(
+                      Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          'joined $joinedAt',
+                          style: contentTextStyle,
+                        ),
+                      ),
+                      const SizedBox(
                         height: 15,
                       ),
-                      Divider(
+                      const Divider(
                         thickness: 1,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
-                      Text(
-                        'Contact Info',
-                        style: _titleTextStyle,
+                      Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Contact Info',
+                          style: _titleTextStyle,
+                        ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 15,
                       ),
                       Padding(
                         padding: const EdgeInsets.all(3.0),
-                        child: userInfo(title: 'Email:', content: email),
+                        child: userInfo(title: 'Email   :', content: email),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(3.0),
                         child: userInfo(
-                            title: 'Phone number:', content: phoneNumber),
+                            title: 'Ph No.  :', content: phoneNumber),
                       ),
-                      SizedBox(
+                      Padding(
+                        padding: const EdgeInsets.all(3.0),
+                        child: userInfo(
+                            title: 'Address :', content: userLocation),
+                      ),
+                      const SizedBox(
                         height: 15,
                       ),
                       _isSameUser
                           ? Container()
-                          : Divider(
+                          : const Divider(
                         thickness: 1,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
-                      _isSameUser
-                          ? Container()
-                          : Row(
+                      Row(
                         mainAxisAlignment:
                         MainAxisAlignment.spaceAround,
                         children: [
@@ -182,15 +252,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               icon: Icons.call_outlined),
                         ],
                       ),
-                      SizedBox(
-                        height: 25,
-                      ),
-                      Divider(
-                        thickness: 1,
-                      ),
-                      SizedBox(
-                        height: 25,
-                      ),
+                      const SizedBox(height: 25,),
+                      const Divider(thickness: 1,),
+                      const SizedBox(height: 25,),
                       !_isSameUser
                           ? Container()
                           : Center(
@@ -199,15 +263,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           const EdgeInsets.only(bottom: 30),
                           child: MaterialButton(
                             onPressed: () {
-                              _auth.signOut();
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => UserState(),
-                                ),
-                              );
+                              _logOut(context);
                             },
-                            color: Colors.pink.shade700,
+                            color: buttonColor,
                             elevation: 8,
                             shape: RoundedRectangleBorder(
                                 borderRadius:
@@ -222,15 +280,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 children: [
                                   Icon(
                                     Icons.logout,
-                                    color: Colors.white,
+                                    color: buttonTextColor,
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     width: 8,
                                   ),
                                   Text(
                                     'Logout',
                                     style: TextStyle(
-                                        color: Colors.white,
+                                        color: buttonTextColor,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 20),
                                   ),
@@ -251,7 +309,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     width: size.width * 0.26,
                     height: size.width * 0.26,
                     decoration: BoxDecoration(
-                        color: Colors.red,
+                        color: buttonColor,
                         shape: BoxShape.circle,
                         border: Border.all(
                           width: 8,
@@ -260,7 +318,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         image: DecorationImage(
                             image: NetworkImage(imageUrl == null
-                                ? 'https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_icon_159358.png'
+                                ? personIconImage
                                 : imageUrl),
                             fit: BoxFit.fill)),
                   ),
@@ -327,13 +385,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
       children: [
         Text(
           title,
-          style: _titleTextStyle,
+          style: TextStyle(
+            fontSize: 19,
+            color: Colors.black,
+            fontWeight: FontWeight.w600,
+          ),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Text(
             content,
-            style: contentTextStyle,
+            style: TextStyle(
+              fontSize: 18,
+              color: Colors.black54,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ),
       ],

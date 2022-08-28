@@ -21,14 +21,15 @@ class MyApp extends StatelessWidget {
               home: Scaffold(
                 body: Center(
                   child: Text(
-                    'Moaveen initialized',
+                    'Moaveen App',
                     style: TextStyle(
-                        color: Colors.cyan,
+                        color: Colors.green,
                         fontSize: 40,
                         fontWeight: FontWeight.bold,
                         fontFamily: 'Signatra'),
                   ),
                 ),
+
               ),
             );
           } else if (snapshot.hasError) {
@@ -52,7 +53,9 @@ class MyApp extends StatelessWidget {
             theme: ThemeData(
               scaffoldBackgroundColor: Colors.black,
               primarySwatch: Colors.blue,
+              fontFamily: 'Raleway',
             ),
+
             home: UserState(),
           );
         });

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:moaveen/Search/profile_screen.dart';
+import 'package:moaveen/InnerScreens/profile_screen.dart';
 
 class CommentWidget extends StatefulWidget {
   final String commentId;
@@ -74,10 +74,11 @@ class _CommentWidgetState extends State<CommentWidget> {
                 children: [
                   Text(
                     widget.commenterName,
-                    style: TextStyle(
+                    style: const TextStyle(
+                        color: Colors.black,
                         fontStyle: FontStyle.normal,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20),
+                        fontWeight: FontWeight.w500,
+                        fontSize: 15),
                   ),
                   Text(
                     widget.commentBody,

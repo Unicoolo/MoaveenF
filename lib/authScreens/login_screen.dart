@@ -1,13 +1,15 @@
+
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:moaveen/ForgetPassword/forget_password_screen.dart';
+import 'package:moaveen/authScreens/forget_password_screen.dart';
 import 'package:moaveen/Services/global_methods.dart';
 import 'package:moaveen/Services/global_variables.dart';
-import 'package:moaveen/SignupPage/signup_screen.dart';
+import 'package:moaveen/authScreens/signup_screen.dart';
+
 
 class Login extends StatefulWidget {
 
@@ -80,7 +82,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
           _isLoading=false;
         });
         GlobalMethod.showErrorDialog(error: error.toString(), ctx: context);
-        print('error occurred');
+        print('Error Occurred');
       }
     }
     setState(() {
@@ -97,9 +99,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
             imageUrl: loginUrlImage,
             placeholder: (context, url) =>
                 Image.asset(
-                  'assets/images/wallpaper.jpg',
+                  logoInImage,
                   fit: BoxFit.fill,
-
                 ),
             errorWidget: (context, url, error) => const Icon(Icons.error),
             width: double.infinity,
@@ -115,7 +116,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(left: 80, right: 80),
-                      child: Image.asset('assets/images/login.png'),
+                      child: Image.asset(logoImage),
                     ),
                     const SizedBox(height: 15,),
                     Form(
@@ -137,19 +138,19 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                                 return null;
                               }
                             },
-                            style: const TextStyle(color: Colors.white),
-                            decoration: const InputDecoration(
+                            style:  TextStyle(color: fieldColor),
+                            decoration:  InputDecoration(
                               hintText: 'Email',
-                              hintStyle: TextStyle(color: Colors.white),
+                              hintStyle: TextStyle(color: fieldColor),
                               enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
+                                borderSide: BorderSide(color: fieldBorderColor),
                               ),
                               focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
+                                borderSide: BorderSide(color: fieldFocusColor),
                               ),
                               errorBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Colors.red,
+                                  color: fieldErrorColor,
                                 ),
                               ),
                             ),
@@ -170,7 +171,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                                 return null;
                               }
                             },
-                            style: const TextStyle(color: Colors.white),
+                            style: TextStyle(color: fieldColor),
                             decoration: InputDecoration(
                               suffixIcon: GestureDetector(
                                 onTap: () {
@@ -182,20 +183,20 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                                   _obscureText
                                       ? Icons.visibility
                                       : Icons.visibility_off,
-                                  color: Colors.white,
+                                  color: fieldColor,
                                 ),
                               ),
                               hintText: 'Password',
-                              hintStyle: const TextStyle(color: Colors.white),
-                              enabledBorder: const UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
+                              hintStyle:TextStyle(color: fieldColor),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: fieldBorderColor),
                               ),
-                              focusedBorder: const UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color:fieldFocusColor),
                               ),
-                              errorBorder: const UnderlineInputBorder(
+                              errorBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Colors.red,
+                                  color: fieldErrorColor,
                                 ),
                               ),
                             ),
@@ -208,10 +209,10 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                                 Navigator.push(context, MaterialPageRoute(
                                     builder: (context) => ForgetPassword()));
                               },
-                              child: const Text(
+                              child: Text(
                                 'Forget Password',
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  color: buttonTextColor,
                                   fontSize: 17,
                                   fontStyle: FontStyle.italic,
                                 ),
@@ -221,7 +222,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                           const SizedBox(height: 10,),
                           MaterialButton(
                             onPressed: _submitFormOnLogin,
-                            color: buttomColor,//green
+                            color: buttonColor,//green
                             elevation: 8,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(13),
@@ -230,11 +231,11 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                               padding: const EdgeInsets.symmetric(vertical: 14),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [
+                                children: [
                                   Text(
                                     'Login',
                                     style: TextStyle(
-                                      color: Colors.white,
+                                      color: buttonTextColor,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 20,
                                     ),
@@ -248,10 +249,10 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                             child: RichText(
                               text: TextSpan(
                                 children: [
-                                  const TextSpan(
+                                   TextSpan(
                                     text: 'Do not have a account ?',
                                     style: TextStyle(
-                                      color: Colors.white,
+                                      color: buttonTextColor,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16,
                                     ),
@@ -261,8 +262,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                                     recognizer: TapGestureRecognizer()
                                         ..onTap=()=> Navigator.push(context, MaterialPageRoute(builder: (context)=>SignUp())),
                                     text: 'SignUp',
-                                    style: const TextStyle(
-                                      color: Colors.cyan,
+                                    style: TextStyle(
+                                      color: buttonColor,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16,
                                     ),

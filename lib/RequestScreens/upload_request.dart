@@ -8,17 +8,19 @@ import 'package:moaveen/Widgets/bottom_nav_bar.dart';
 import 'package:moaveen/constants/constants.dart';
 import 'package:uuid/uuid.dart';
 
-class UploadTask extends StatefulWidget {
+class Uploadrequest extends StatefulWidget {
   @override
-  _UploadTaskState createState() => _UploadTaskState();
+  _UploadrequestState createState() => _UploadrequestState();
 }
 
-class _UploadTaskState extends State<UploadTask> {
+class _UploadrequestState extends State<Uploadrequest> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final TextEditingController _taskCategoryController = TextEditingController(text: 'Choose category');
-  final TextEditingController _taskTitleController = TextEditingController();
-  final TextEditingController _taskDescriptionController = TextEditingController();
+  final TextEditingController _requestCategoryController = TextEditingController(text: 'Choose category');
+  final TextEditingController _requestTitleController = TextEditingController();
+  final TextEditingController _requestDescriptionController = TextEditingController();
   final TextEditingController _deadlineDateController = TextEditingController(text: 'Choose Deadline date');
+
+  String? userLocation;
 
   final _formKey = GlobalKey<FormState>();
   DateTime? picked;
@@ -28,20 +30,36 @@ class _UploadTaskState extends State<UploadTask> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    _taskCategoryController.dispose();
-    _taskTitleController.dispose();
-    _taskDescriptionController.dispose();
+    _requestCategoryController.dispose();
+    _requestTitleController.dispose();
+    _requestDescriptionController.dispose();
     _deadlineDateController.dispose();
   }
 
-  void _uploadTask() async {
-    final taskID = Uuid().v4();
+
+
+  void _uploadrequest() async {
+    final requestID = Uuid().v4();
     User? user = _auth.currentUser;
     final _uid = user!.uid;
+    final _location = user!.uid;
+    final DocumentSnapshot userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(_uid)
+        .get();
+    if (userDoc == null) {
+      print("request Not Found");
+      return;
+    } else {
+      setState(() {
+        print("USer Name : ${userDoc.get('name')}");
+        userLocation = userDoc.get('location');
+      });
+    }
     final isValid = _formKey.currentState!.validate();
     if (isValid) {
       if (_deadlineDateController.text == 'Choose Deadline date' ||
-          _taskCategoryController.text == 'Choose category') {
+          _requestCategoryController.text == 'Choose category') {
         GlobalMethod.showErrorDialog(
             error: 'Please Fill Everything', ctx: context);
         return;
@@ -50,28 +68,28 @@ class _UploadTaskState extends State<UploadTask> {
         _isLoading = true;
       });
       try {
-        await FirebaseFirestore.instance.collection('tasks').doc(taskID).set({
-          'taskId': taskID,
+        await FirebaseFirestore.instance.collection('requests').doc(requestID).set({
+          'requestId': requestID,
           'uploadedBy': _uid,
-          'taskTitle': _taskTitleController.text,
-          'taskDescription': _taskDescriptionController.text,
+          'requestLocation':userLocation,
+          'requestTitle': _requestTitleController.text,
+          'requestDescription': _requestDescriptionController.text,
           'deadlineDate': _deadlineDateController.text,
           'deadlineDateTimeStamp': deadlineDateTimeStamp,
-          'taskCategory': _taskCategoryController.text,
-          'taskComments': [],
+          'requestCategory': _requestCategoryController.text,
+          'requestComments': [],
           'isDone': false,
           'createdAt': Timestamp.now(),
         });
         await Fluttertoast.showToast(
             msg: "The Request has been uploaded",
             toastLength: Toast.LENGTH_LONG,
-            // gravity: ToastGravity.,
             backgroundColor: Colors.grey,
             fontSize: 18.0);
-        _taskTitleController.clear();
-        _taskDescriptionController.clear();
+        _requestTitleController.clear();
+        _requestDescriptionController.clear();
         setState(() {
-          _taskCategoryController.text = 'Choose category';
+          _requestCategoryController.text = 'Choose category';
           _deadlineDateController.text = 'Choose Deadline date';
         });
       } catch (error) {} finally {
@@ -89,42 +107,33 @@ class _UploadTaskState extends State<UploadTask> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       bottomNavigationBar: BottomNavigationBarForApp(indexNum:2),
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.white,
+
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Constants.darkBlue),
-        elevation: 0,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        title: Text(
+          'Request Upload',
+          style: TextStyle(color: appBarTitleColor),
+        ),
+        centerTitle: true,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [gradient1, gradient2],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+              stops: const [0.2, 0.9],
+            ),
+          ),
+        ),
       ),
-      //drawer: DrawerWidget(),
       body: Padding(
-        padding: const EdgeInsets.all(7),
-        child: Card(
+        padding: const EdgeInsets.all(10),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(
                   height: 10,
-                ),
-                Align(
-                  alignment: Alignment.center,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'All Field are required',
-                      style: TextStyle(
-                        color: Constants.darkBlue,
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                const Divider(
-                  thickness: 1,
                 ),
                 // SizedBox(height: 10,),
                 Padding(
@@ -136,33 +145,33 @@ class _UploadTaskState extends State<UploadTask> {
                       children: [
                         _textTitles(label: 'Category*'),
                         _textFormFields(
-                            valueKey: 'TaskCategory',
-                            controller: _taskCategoryController,
+                            valueKey: 'requestCategory',
+                            controller: _requestCategoryController,
                             enabled: false,
                             fct: () {
-                              _showTaskCategoriesDialog(size: size);
+                              _showCategoriesDialog(size: size);
                             },
                             maxLength: 100),
                         //title
                         _textTitles(label: 'Title*'),
                         _textFormFields(
-                            valueKey: 'TaskTitle',
-                            controller: _taskTitleController,
+                            valueKey: 'requestTitle',
+                            controller: _requestTitleController,
                             enabled: true,
                             fct: () {},
                             maxLength: 100),
                         //description
                         _textTitles(label: 'Description*'),
                         _textFormFields(
-                            valueKey: 'TaskDescription',
-                            controller: _taskDescriptionController,
+                            valueKey: 'requestDescription',
+                            controller: _requestDescriptionController,
                             enabled: true,
                             fct: () {},
                             maxLength: 1000),
                         //deadline date
                         _textTitles(label: 'Deadline date*'),
                         _textFormFields(
-                            valueKey: 'Taskdeadline',
+                            valueKey: 'requestdeadline',
                             controller: _deadlineDateController,
                             enabled: false,
                             fct: () {
@@ -180,8 +189,8 @@ class _UploadTaskState extends State<UploadTask> {
                     child: _isLoading
                         ? const CircularProgressIndicator()
                         : MaterialButton(
-                            onPressed: _uploadTask,
-                            color: buttomColor,
+                            onPressed: _uploadrequest,
+                            color: buttonColor,
                             elevation: 8,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(13)),
@@ -214,7 +223,7 @@ class _UploadTaskState extends State<UploadTask> {
               ],
             ),
           ),
-        ),
+
       ),
     );
   }
@@ -226,6 +235,7 @@ class _UploadTaskState extends State<UploadTask> {
       required Function fct,
       required int maxLength}) {
     return Padding(
+
       padding: const EdgeInsets.all(5.0),
       child: InkWell(
         onTap: () {
@@ -242,24 +252,24 @@ class _UploadTaskState extends State<UploadTask> {
           enabled: enabled,
           key: ValueKey(valueKey),
           // initialValue: 'heloo',
-          style: TextStyle(
-              color: Constants.darkBlue,
+          style: const TextStyle(
+              color: Colors.black,
               fontWeight: FontWeight.bold,
               fontStyle: FontStyle.italic),
-          maxLines: valueKey == 'TaskDescription' ? 3 : 1,
+          maxLines: valueKey == 'requestDescription' ? 3 : 1,
           maxLength: maxLength,
           keyboardType: TextInputType.text,
-          decoration: InputDecoration(
+          decoration:  InputDecoration(
             filled: true,
-            fillColor: Theme.of(context).scaffoldBackgroundColor,
+            fillColor: Colors.black12,
             enabledBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(color: Colors.white),
+              borderSide: BorderSide(color: Colors.black54),
             ),
-            focusedBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(color: Colors.pink),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: fieldFocusColor),
             ),
-            errorBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(color: Colors.red),
+            errorBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: fieldErrorColor),
             ),
           ),
         ),
@@ -267,26 +277,26 @@ class _UploadTaskState extends State<UploadTask> {
     );
   }
 
-  _showTaskCategoriesDialog({required Size size}) {
+  _showCategoriesDialog({required Size size}) {
     showDialog(
         context: context,
         builder: (ctx) {
           return AlertDialog(
             title: Text(
               'Category',
-              style: TextStyle(fontSize: 20, color: Colors.pink.shade800),
+              style: TextStyle(fontSize: 20, color: headingColor,fontWeight: FontWeight.bold),
             ),
             content: Container(
               width: size.width * 0.9,
               child: ListView.builder(
                   shrinkWrap: true,
-                  itemCount: Constants.taskCategoryList.length,
+                  itemCount: Constants.requestCategoryList.length,
                   itemBuilder: (ctxx, index) {
                     return InkWell(
                       onTap: () {
                         setState(() {
-                          _taskCategoryController.text =
-                              Constants.taskCategoryList[index];
+                          _requestCategoryController.text =
+                              Constants.requestCategoryList[index];
                         });
                         Navigator.pop(context);
                       },
@@ -294,19 +304,23 @@ class _UploadTaskState extends State<UploadTask> {
                         children: [
                           Icon(
                             Icons.check_circle_rounded,
-                            color: Colors.red.shade200,
+                            color: iconColor,
                           ),
                           // SizedBox(width: 10,),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              Constants.taskCategoryList[index],
-                              style: TextStyle(
-                                  color: Constants.darkBlue,
-                                  fontSize: 18,
-                                  fontStyle: FontStyle.italic),
+
+                             Expanded(
+                               child: SingleChildScrollView(
+                                 child: Text(
+                                  Constants.requestCategoryList[index],
+                                  style: TextStyle(
+                                      color: contentColor,
+                                      fontSize: 18,
+                                      fontStyle: FontStyle.italic),
+                                   maxLines: 2,
                             ),
-                          )
+                               ),
+                             ),
+                          const SizedBox(height: 40,),
                         ],
                       ),
                     );
@@ -350,7 +364,7 @@ class _UploadTaskState extends State<UploadTask> {
       child: Text(
         label,
         style: TextStyle(
-          color: Colors.pink[800],
+          color: Colors.black,
           fontSize: 18,
           fontWeight: FontWeight.bold,
         ),

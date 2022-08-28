@@ -4,7 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:moaveen/LoginPage/login_screen.dart';
+import 'package:moaveen/authScreens/login_screen.dart';
 
 import '../Services/global_variables.dart';
 
@@ -71,7 +71,7 @@ class _ForgetPasswordState extends State<ForgetPassword> with TickerProviderStat
             imageUrl: forgetUrlImage,
             placeholder: (context, url) =>
                 Image.asset(
-                  'assets/images/wallpaper.jpg',
+                  forgetImage,
                   fit: BoxFit.fill,
 
                 ),
@@ -87,18 +87,18 @@ class _ForgetPasswordState extends State<ForgetPassword> with TickerProviderStat
               SizedBox(
                 height: size.height*0.1,
               ),
-              const Text('Forget Password',
+              Text('Forget Password',
               style: TextStyle(
-                color: Colors.white,
+                color: headingColor,
                 fontWeight: FontWeight.bold,
                 fontFamily: 'Signatra',
                 fontSize: 55,
               ),),
               const SizedBox(height: 10,),
-              const Text(
+               Text(
                 'Email Address',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: buttonTextColor,
                   fontWeight: FontWeight.bold,
                   fontStyle: FontStyle.italic,
                   fontSize: 18,
@@ -107,14 +107,14 @@ class _ForgetPasswordState extends State<ForgetPassword> with TickerProviderStat
               const SizedBox(height: 20,),
               TextField(
                 controller: _forgetPassTextController,
-                decoration: const InputDecoration(
+                decoration:  InputDecoration(
                   filled: true,
                   fillColor: Colors.white54,
                   enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
+                      borderSide: BorderSide(color: fieldBorderColor),
                   ),
                   focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
+                    borderSide: BorderSide(color:fieldFocusColor),
                   )
                 ),
               ),
@@ -123,17 +123,17 @@ class _ForgetPasswordState extends State<ForgetPassword> with TickerProviderStat
                 onPressed: (){
                   _forgetPassSubmitForm();
                 },
-                color: Colors.cyan,
+                color: buttonColor,
                 elevation: 8,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(13),
                 ),
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 14),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
                   child: Text(
                         'Reset Now',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: buttonTextColor,
                           fontWeight: FontWeight.bold,
                           fontStyle: FontStyle.italic,
                           fontSize: 20,

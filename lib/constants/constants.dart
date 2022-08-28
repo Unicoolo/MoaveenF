@@ -1,20 +1,39 @@
-import 'dart:ui';
 
 class Constants {
-  static Color darkBlue = Color(0xFF00325A);
 
-  static List<String> taskCategoryList = [
+  static List<String> requestCategoryList = [
+    'Muscular Dystrophy',
+    'Polio',
+    'Blindness',
+    'Deaf and Hard of Hearing',
+    'Mentally Retarder',
+    'Time Spending',
+    'other',
+  ];
+
+  static List<String> durationList = [
     'Hourly',
     'Half Day',
     'Full Day',
     'Weekly',
     'Monthly',
     'Task',
-    'Repeatly',
+    'Repeatedly',
   ];
 
- static  List<String> jobsList = [
+  static List<String> locationList = [
+    'Shalimar',
+    'Walton',
+    'DHA',
+    'TownShip',
+    'Johr Town',
+    'Bahria Town',
+    'Gulberg',
+    'Sabza Zar',
+  ];
+
+ static  List<String> roleList = [
     'Attendant',
-    'Special Abled',
+    'SpecialAble',
   ];
 }

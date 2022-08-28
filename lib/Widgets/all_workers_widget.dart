@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:moaveen/Search/profile_screen.dart';
+import 'package:moaveen/InnerScreens/profile_screen.dart';
 import 'package:moaveen/constants/constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -8,7 +8,7 @@ class AllWorkersWidget extends StatefulWidget {
   final String userID;
   final String userName;
   final String userEmail;
-  final String positionInCompany;
+  final String userLocation;
   final String phoneNumber;
   final String userImageUrl;
 
@@ -16,7 +16,7 @@ class AllWorkersWidget extends StatefulWidget {
       {required this.userID,
       required this.userName,
       required this.userEmail,
-      required this.positionInCompany,
+      required this.userLocation,
       required this.phoneNumber,
       required this.userImageUrl});
   @override
@@ -28,7 +28,7 @@ class _AllWorkersWidgetState extends State<AllWorkersWidget> {
   Widget build(BuildContext context) {
     return Card(
       elevation: 8,
-      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       child: ListTile(
           onTap: () {
             Navigator.pushReplacement(
@@ -40,17 +40,17 @@ class _AllWorkersWidgetState extends State<AllWorkersWidget> {
               ),
             );
           },
-          contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           leading: Container(
-            padding: EdgeInsets.only(right: 12),
-            decoration: BoxDecoration(
+            padding: const EdgeInsets.only(right: 12),
+            decoration: const BoxDecoration(
               border: Border(
                 right: BorderSide(width: 1),
               ),
             ),
             child: CircleAvatar(
               backgroundColor: Colors.transparent,
-              radius: 20,
+              radius: 25,
               child: Image.network(widget.userImageUrl == null
                   ? 'https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_icon_159358.png'
                   : widget.userImageUrl),
@@ -60,32 +60,47 @@ class _AllWorkersWidgetState extends State<AllWorkersWidget> {
             widget.userName,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
-              color: Constants.darkBlue,
+              color: Colors.black54,
+              fontSize: 16,
             ),
           ),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Icon(
-                Icons.linear_scale_outlined,
-                color: Colors.pink.shade800,
+              const Divider(thickness: 0.1,color: Colors.black,),
+              Row(
+                children: [
+                  const Icon(Icons.location_on_outlined,size: 18,color: Colors.black45,),
+                  Text(
+                    widget.userLocation,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ],
               ),
-              Text(
-                '${widget.positionInCompany}/${widget.phoneNumber}',
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 16),
+              Row(
+                children: [
+                  const Icon(Icons.call,size: 18,color: Colors.black45,),
+                  Text(
+                    widget.phoneNumber,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ],
               ),
+
             ],
           ),
           trailing: IconButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.mail_outline,
               size: 30,
-              color: Colors.pink.shade800,
+              color: Colors.black,
             ),
             onPressed: _mailTo,
           )),
