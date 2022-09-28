@@ -1,7 +1,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:moaveen/RequestScreens/request_screen.dart';
+import 'package:moaveen/InnerScreens/home.dart';
 import 'package:moaveen/authScreens/login_screen.dart';
 
 class UserState extends StatelessWidget {
@@ -21,7 +21,7 @@ class UserState extends StatelessWidget {
           else if(userSnapshot.hasData)
           {
             print('User is already logged in yet');
-            return requestsScreen();
+            return homeScreen();
           }
           else if(userSnapshot.hasError)
           {

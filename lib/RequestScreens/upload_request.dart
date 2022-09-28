@@ -42,7 +42,7 @@ class _UploadrequestState extends State<Uploadrequest> {
     final requestID = Uuid().v4();
     User? user = _auth.currentUser;
     final _uid = user!.uid;
-    final _location = user!.uid;
+    final _location = user.uid;
     final DocumentSnapshot userDoc = await FirebaseFirestore.instance
         .collection('users')
         .doc(_uid)
